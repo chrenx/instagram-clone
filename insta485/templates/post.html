@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>insta485</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    </head>
+    
+    <body>
+        
+    <div class="topPart" style="margin-left:15%; margin-right:15%; position:relative;">
+        <a href="{{url_for("show_index")}}">
+            <div class="icon" style="top:0; left:0; position:absolute;">
+                <img src="{{url_for("static", filename="images/insta_icon.png")}}" alt="instagram icon" width="50">
+                <div class="verticalBar" style="border-right: 1px solid gray; height:30px; left:60px; top:10px; position:absolute;"></div>
+                <div class="insta485" style="left:80px; top:16px; position: absolute; color:black;">Insta485</div>
+            </div>
+        </a>
+
+        <div class="explore" style="top:16px; right: 10px; position:absolute;">
+            <a href="{{url_for("explore")}}" style="text-decoration:none; color:black;">explore</a> | <a href={{url_for("users", user_url_slug=logname)}} style="text-decoration:none; color:black;">{{logname}}</a>
+        </div>
+
+        <hr class="topPart" style="position:absolute; width:100%; top:40px; color:lightgray; ">
+
+    </div> <!-- for the whole style, everything in the middle-->
+    
+
+    <!-- awdeorio post -->
+    <div class="middlePart" style="border:lightgray; border-style:solid; border-width:1px; top:90px; margin-left:23%; margin-right:23%; position: relative">
+        
+        <a href={{url_for("users", user_url_slug=owner)}} style="text-decoration:none; color:black;">
+            <img src={{url_for("get_pic", filename=owner_img)}} alt={{owner}} width="40" style="position:absolute;">
+            <div style="position:absolute; top:15px; left:50px;">
+                <b>
+                    {{owner}}
+                </b>
+            </div>
+        </a>
+        <a href={{url_for("posts", postid_url_slug=postid)}} style="text-decoration:none; color:gray;">
+            <div style="position:absolute; top:15px; right:0px; color:gray;">{{timestamp}}</div>
+        </a>
+        <br><br><br>
+        <img src={{url_for("get_pic", filename=post_img)}} alt="{{owner}}Ins" style="max-width:100%; height:auto; width:auto">
+        <br><br>
+        <div>
+            {% if likes == 1 %}
+                1 like
+            {% else %}
+                {{likes}} likes
+            {% endif %}
+        </div><br>
+        {% for comment in comments %}
+            <div>
+                <a href={{url_for("users", user_url_slug=comment[1])}} style="text-decoration:none; color:black;">
+                    <b>{{comment[1]}}</b>
+                </a> {{comment[2]}}
+                {% if logname == comment[1] %}
+                    <form action="/comments/?target={{current_page}}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="operation" value="delete"/>
+                        <input type="hidden" name="commentid" value={{comment[0]}} />
+                        <input type="submit" name="uncomment" value="delete"/>
+                    </form>
+                {% endif %}
+            </div><br class="smaller">
+        {% endfor %}
+
+        {% if like_already %}
+        <!-- show unlike button if user likes-->
+            <form action="/likes/?target={{current_page}}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="operation" value="unlike"/>
+                <input type="hidden" name="postid" value={{postid}} />
+                <input type="submit" name="unlike" value="unlike"/>
+            </form>
+        {% else %}
+        <!-- show like button if user unlikes-->
+            <form action="/likes/?target={{current_page}}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="operation" value="like"/>
+                <input type="hidden" name="postid" value={{postid}} />
+                <input type="submit" name="like" value="like"/>
+            </form>
+
+        {% endif %}
+        <br>
+        <!-- comments -->
+        <form action="/comments/?target={{current_page}}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="operation" value="create"/>
+            <input type="hidden" name="postid" value="{{postid}}" />
+            <input type="text" name="text" required/>
+            <input type="submit" name="comment" value="comment"/>
+        </form><br>
+
+        {% if logname == owner %}
+            <form action="/posts/?target={{url_for("users", user_url_slug=logname)}}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="operation" value="delete"/>
+                <input type="hidden" name="postid" value={{postid}} />
+                <input type="submit" name="delete" value="delete this post"/>
+            </form>
+        {% endif %}
+    </div><br><br>
+    
+    </body>
+</html> 

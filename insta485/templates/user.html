@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+        <meta charset="utf-8">
+        <title>insta485</title>
+		<style>
+			a { text-decoration: none; color: black;}
+  		</style>
+    </head>
+    
+    <body>
+    <div class="topPart" style="margin-left:15%; margin-right:15%; position:relative;">
+        <a href="{{url_for("show_index")}}">
+            <div class="icon" style="top:0; left:0; position:absolute;">
+                <img src="{{url_for("static", filename="images/insta_icon.png")}}" alt="instagram icon" width="50">
+                <div class="verticalBar" style="border-right: 1px solid gray; height:30px; left:60px; top:10px; position:absolute;"></div>
+                <div class="insta485" style="left:80px; top:16px; position: absolute; color:black;">Insta485</div>
+            </div>
+        </a>
+
+        <div class="explore" style="top:16px; right: 10px; position:absolute;">
+            <a href="{{url_for("explore")}}" style="text-decoration:none; color:black;">explore</a> | <a href={{url_for("users", user_url_slug=logname)}} style="text-decoration:none; color:black;">{{logname}}</a>
+        </div>
+
+        <hr class="topPart" style="position:absolute; width:100%; top:40px; color:lightgray; ">
+
+    </div><br><br><br><br> 
+
+
+	<div class="middlePart" style="margin-left: 20%; margin-right: 20%; position: relative;">
+        <h1>{{username}}</h1>
+		{% if logname == username %}
+			<!--Edit profile here-->
+			<a href={{url_for("edit")}} style="text-decoration:none; color:black;"><h3><b>Edit profile</b></h3></a>
+			
+			<form action="/accounts/logout/" method="post" enctype="multipart/form-data">
+				<input type="submit" name="logout" value="Logout"/>
+			</form><br>
+
+		{% endif %}
+		<div>
+			{% if logname != username %}
+				{% if logname_follows_username %}
+					following
+					<form action="/following/?target={{current_page}}" method="post" enctype="multipart/form-data">
+						<input type="submit" name="unfollow" value="unfollow"/>
+						<input type="hidden" name="username" value={{username}} />
+						<input type="hidden" name="operation" value="unfollow"/>
+					</form>
+				{% else %}
+					not following
+					<form action="/following/?target={{current_page}}" method="post" enctype="multipart/form-data">
+						<input type="submit" name="follow" value="follow"/>
+						<input type="hidden" name="username" value={{username}} />
+						<input type="hidden" name="operation" value="follow"/>
+					</form>
+				{% endif %}
+				<br style="display: block; margin:10px;">
+			{% endif %}
+			{% if num_posts == 1 %}
+                1 post
+            {% else %}
+                {{num_posts}} posts
+            {% endif %}
+			<b>
+				<a href={{url_for("follower", user_url_slug1=username)}}>
+					{% if num_followers == 1 %}
+						1 follower
+					{% else %}
+						{{num_followers}} followers
+					{% endif %}
+				</a>
+				<a href={{url_for("following", user_url_slug2=username)}}>{{num_followings}} following</a>
+			</b>
+		
+		</div><br style="display: block; margin:10px;">
+		<div>{{fullname}}</div><br>
+
+		{% if logname == username %}
+			<form action="/posts/?target={{current_page}}" method="post" enctype="multipart/form-data">
+				<input type="file" name="file" accept="image/*" required/>
+				<input type="submit" name="create_post" value="upload new post"/>
+				<input type="hidden" name="operation" value="create"/>
+			</form>
+		{% endif %}
+		<br><br>
+
+		<div class="row" style="display:flex;">
+			{% for post in posts %}
+				<div class="column" style="flex:50%; padding:5px;">
+					<a href={{url_for("posts", postid_url_slug=post[0])}} >
+						<img src={{url_for("get_pic", filename=post[1])}} alt="{{post[2]}} Post" style="width:100%;">
+					</a>
+				</div>
+			{% endfor %}
+		</div>
+	</div><br>
+
+	</body>
+
+</html>
+

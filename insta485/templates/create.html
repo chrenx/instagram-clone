@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>insta485</title>
+        <link rel="stylesheet" type="text/css" href="{{url_for("static", filename="css/style.css")}}">
+    </head>
+    
+    <body>
+        
+    <div class="topPart">
+        <a href="{{url_for("show_index")}}">
+            <div class="icon">
+                <img class="icon" src="{{url_for("static", filename="images/insta_icon.png")}}" alt="instagram icon" width="50">
+                <div class="verticalBar"></div>
+                <div class="insta485" style="color:black;">Insta485</div>
+            </div>
+        </a>
+
+        <div style="top: 16px; right: 10px; position: absolute;">
+            <b>login</b>
+        </div>
+
+        <hr class="topPart">
+        <br><br><br><br><br>
+
+        <!-- DO NOT CHANGE THIS (aside from styling) -->
+        <form action="/accounts/?target={{url_for("show_index")}}" method="post" enctype="multipart/form-data" style="position: absolute; left: 50px;">
+            <label class="createlabel" for="Photo">Photo</label><input type="file" name="file" required/><br><br>
+            <label class="createlabel" for="Name">Name</label><input type="text" name="fullname" required/><br><br>
+            <label class="createlabel" for="Username">Username</label><input type="text" name="username" required/><br><br>
+            <label class="createlabel" for="Email">Email</label><input type="text" name="email" required/><br><br>
+            <label class="createlabel" for="Password">Password</label><input type="password" name="password" required/><br><br>
+            <label class="createlabel" for="submit"></label><input type="submit" name="signup" value="sign up"/><br>
+                <input type="hidden" name="operation" value="create"/><br>
+        </form>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <div style="position: absolute; left: 50px;"> Have an account? <a href="{{url_for("login")}}" style="text-decoration:none; color:black;"><b> Log in</b></a></div>
+
+
+
+    </div> <!-- for the whole style, everything in the middle-->
+    
+    </body>
+</html> 

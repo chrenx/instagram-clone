@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>insta485</title>
+        <link rel="stylesheet" type="text/css" href="{{url_for("static", filename="css/style.css")}}">
+    </head>
+    
+    <body>
+        
+    <div class="topPart">
+        <a href="{{url_for("show_index")}}">
+            <div class="icon">
+                <img class="icon" src="{{url_for("static", filename="images/insta_icon.png")}}" alt="instagram icon" width="50">
+                <div class="verticalBar"></div>
+                <div class="insta485" style="color:black;">Insta485</div>
+            </div>
+        </a>
+
+        <div style="top: 16px; right: 10px; position: absolute;">
+            <b>login</b>
+        </div>
+
+        <hr class="topPart">
+        <br><br><br><br><br>
+
+
+        <div style="position: absolute; left: 50px;">{{logname}}</div><br><br>
+        <!-- DO NOT CHANGE THIS -->
+        <form action="/accounts/?target=/accounts/create/" method="post" enctype="multipart/form-data" style="position: absolute; left: 50px;">
+            <input type="submit" name="delete" value="confirm delete account"/>
+            <input type="hidden" name="operation" value="delete"/>
+        </form>
+
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+
+
+    </div> <!-- for the whole style, everything in the middle-->
+    
+    </body>
+</html> 

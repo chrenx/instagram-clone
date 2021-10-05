@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>insta485</title>
+        <link rel="stylesheet" type="text/css" href="{{url_for("static", filename="css/style.css")}}">
+    </head>
+    
+    <body>
+        
+    <div class="topPart">
+        <a href="{{url_for("show_index")}}">
+            <div class="icon">
+                <img class="icon" src="{{url_for("static", filename="images/insta_icon.png")}}" alt="instagram icon" width="50">
+                <div class="verticalBar"></div>
+                <div class="insta485" style="color:black;">Insta485</div>
+            </div>
+        </a>
+
+        <div style="top: 16px; right: 10px; position: absolute;">
+            <b>login</b>
+        </div>
+
+        <hr class="topPart">
+        <br><br><br><br><br>
+
+    </div> <!-- for the whole style, everything in the middle-->
+
+    <div class="middlePart" style="border:lightgray; border-style:solid; border-width:0px; top:90px; margin-left:23%; margin-right:23%; position: relative">
+        
+        <a href={{url_for("users", user_url_slug=logname)}} style="text-decoration:none; color:black;">
+            <img src={{url_for("get_pic", filename=profile)}} alt={{logname}} width="40" style="position:absolute;">
+            <div style="position:absolute; top:15px; left:50px;">
+                <b>
+                    {{logname}}
+                </b>
+            </div>
+        </a>
+        <br><br><br><br>
+
+        <form action="/accounts/?target={{current_page}}" method="post" enctype="multipart/form-data">
+            Photo<input type="file" name="file" accept="image/*"/><br><br>
+            Name<input type="text" name="fullname" value="{{fullname }}" required/><br><br>
+            Email<input type="text" name="email" value={{email}} required/><br><br>
+            <input type="submit" name="update" value="submit"/><br><br>
+            <input type="hidden" name="operation" value="edit_account"/><br>
+        </form>
+        <br><br>
+        <div style="position: absolute;">
+            <a href="/accounts/password/" style="text-decoration:none; color:black;">
+                <b>Change Password
+                </b>
+            </a>
+        </div><br><br><br>
+        <div style="position: absolute;">
+            <a href="/accounts/delete/" style="text-decoration:none; color:black;">
+                <b>DELETE ACCOUNT
+                </b>
+            </a>
+        </div>
+        
+    </div><br><br>
+    
+    </body>
+</html> 

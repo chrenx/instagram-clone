@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+        <meta charset="utf-8">
+        <title>insta485</title>
+		<style>
+			a { text-decoration: none; color: black;}
+  		</style>
+    </head>
+    
+    <body>
+    <div class="topPart" style="margin-left:15%; margin-right:15%; position:relative;">
+        <a href="{{url_for("show_index")}}">
+            <div class="icon" style="top:0; left:0; position:absolute;">
+                <img src="{{url_for("static", filename="images/insta_icon.png")}}" alt="instagram icon" width="50">
+                <div class="verticalBar" style="border-right: 1px solid gray; height:30px; left:60px; top:10px; position:absolute;"></div>
+                <div class="insta485" style="left:80px; top:16px; position: absolute; color:black;">Insta485</div>
+            </div>
+        </a>
+
+        <div class="explore" style="top:16px; right: 10px; position:absolute;">
+            <a href="{{url_for("explore")}}" style="text-decoration:none; color:black;">explore</a> | <a href={{url_for("users", user_url_slug=logname)}} style="text-decoration:none; color:black;">{{logname}}</a>
+        </div>
+
+        <hr class="topPart" style="position:absolute; width:100%; top:40px; color:lightgray; ">
+
+    </div><br><br><br><br> 
+
+
+	<div class="middlePart" style="margin-left: 20%; margin-right: 20%; position: relative;">
+        <h2>Discover People</h2><br style="display: block; margin:10px;">
+	</div><br>
+
+    {% for discover in unfollow %}
+        <div style="border:1px lightgray; border-style:solid; margin-left:23%; margin-right:23%; top:45px; position:relative">
+            <img src={{url_for("get_pic", filename=discover[1])}} alt={{discover[0]}} width="40" style="position:absolute;">
+            <div style="position:absolute; top:15px; left:50px;">
+                <a href={{url_for("users", user_url_slug=discover[0])}} style="text-decoration:none; color:black;">
+                    <b>
+                        {{discover[0]}}
+                    </b>
+                </a>
+            </div>
+
+            <div style="position:absolute; top:15px; right:0px; color:gray;">
+                        
+                <form action="/following/?target={{current_page}}" method="post" enctype="multipart/form-data">
+                    <input type="submit" name="follow" value="follow"/>
+                    <input type="hidden" name="username" value={{discover[0]}} />
+                    <input type="hidden" name="operation" value="follow"/>
+                </form>
+                
+            </div>
+        </div><br><br>
+    {% endfor %}
+
+	</body>
+
+</html>
+
