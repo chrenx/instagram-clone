@@ -88,8 +88,9 @@ def get_posts_results(username, postid_lte, size, page):
     # find all related posts, and check if it fullfills the page
     all_people = tuple(all_people)
     cur = connection.execute(
-        f"SELECT * FROM posts WHERE owner IN {all_people} "
-        f"LEFT JOIN users ON posts.owner=users.username2 "
+        f"SELECT * FROM posts "
+        f"LEFT JOIN users ON posts.owner=users.username "
+        f"WHERE posts.owner IN {all_people} "
         f"ORDER BY postid DESC "
         f"LIMIT {size} OFFSET {offset}"
     )
@@ -115,14 +116,17 @@ def get_posts_results(username, postid_lte, size, page):
         for comment in cur2:
             sub_comment = {}
             sub_comment["commentid"] = comment["commentid"]
-            sub_comment["lognameOwnsThis"] = "true"
-            if username != comment["owner"]:
-                sub_comment["lognameOwnsThis"] = "false"
-            sub_comment["owner"] = "\"" + comment["owner"] + "\""
-            sub_comment["ownerShowUrl"] = "\"/users/" + comment["owner"] + "/"
-            
-
-
+            sub_comment["lognameOwnsThis"] = username == comment["owner"]
+            # if username != comment["owner"]:
+            #     sub_comment["lognameOwnsThis"] = "false"
+            sub_comment["owner"] = comment["owner"]
+            sub_comment["ownerShowUrl"] = "/users/" + comment["owner"] + "/"
+            sub_comment["text"] = comment["text"]
+            sub_comment["url"] = "/api/v1/comments/" +\
+                                 str(comment["commentid"]) + "/"
+            comments.append(sub_comment)
+        sub_result["comments"] = comments
+        results.append(sub_result)
 
     return results, next_url
 
