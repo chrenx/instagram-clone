@@ -145,16 +145,29 @@ def get_posts_results(username, postid_lte, size, page):
 
     # find all related posts, and check if it fullfills the page
     all_people = tuple(all_people)
-    cur = connection.execute(
-        f"SELECT posts.postid AS postid, posts.filename AS postsFilename, "
-        f"posts.owner AS owner, posts.created AS created, "
-        f"users.filename AS usersFilename "
-        f"FROM posts "
-        f"LEFT JOIN users ON posts.owner=users.username "
-        f"WHERE posts.owner IN {all_people} "
-        f"ORDER BY postid DESC "
-        f"LIMIT {size} OFFSET {offset}"
-    )
+    if postid_lte is None:
+        cur = connection.execute(
+            f"SELECT posts.postid AS postid, posts.filename AS postsFilename, "
+            f"posts.owner AS owner, posts.created AS created, "
+            f"users.filename AS usersFilename "
+            f"FROM posts "
+            f"LEFT JOIN users ON posts.owner=users.username "
+            f"WHERE posts.owner IN {all_people} "
+            f"ORDER BY postid DESC "
+            f"LIMIT {size} OFFSET {offset}"
+        )
+    else:
+        cur = connection.execute(
+            f"SELECT posts.postid AS postid, posts.filename AS postsFilename, "
+            f"posts.owner AS owner, posts.created AS created, "
+            f"users.filename AS usersFilename "
+            f"FROM posts "
+            f"LEFT JOIN users ON posts.owner=users.username "
+            f"WHERE posts.owner IN {all_people} "
+            f"AND posts.postid<={postid_lte} "
+            f"ORDER BY postid DESC "
+            f"LIMIT {size} OFFSET {offset}"
+        )
     cur = cur.fetchall()
     if len(cur) >= size:
         # there should be url for next
