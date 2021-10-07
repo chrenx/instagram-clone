@@ -69,6 +69,64 @@ def check_credentials(username, password):
         raise InvalidUsage("Forbidden", 403)
 
 
+def get_all_comments(post, username):
+    """Get comments for the post."""
+    comments = []
+    connection = insta485.model.get_db()
+    cur2 = connection.execute(
+            "SELECT * FROM comments WHERE postid=? ORDER BY commentid",
+            (post["postid"],)
+        )
+    cur2 = cur2.fetchall()
+    for comment in cur2:
+        sub_comment = {}
+        sub_comment["commentid"] = comment["commentid"]
+        sub_comment["lognameOwnsThis"] = username == comment["owner"]
+        # if username != comment["owner"]:
+        #     sub_comment["lognameOwnsThis"] = "false"
+        sub_comment["owner"] = comment["owner"]
+        sub_comment["ownerShowUrl"] = "/users/" + comment["owner"] + "/"
+        sub_comment["text"] = comment["text"]
+        sub_comment["url"] = "/api/v1/comments/" +\
+                                str(comment["commentid"]) + "/"
+        comments.append(sub_comment)
+    return comments
+
+
+def get_all_likes(post, username):
+    """Get all likes for the post."""
+    likes = {}
+    connection = insta485.model.get_db()
+    cur = connection.execute(
+        "SELECT * FROM likes WHERE postid=?", (post["postid"],)
+    )
+    cur = cur.fetchall()
+    num_likes = len(cur)
+    like_or_not = connection.execute(
+        "SELECT * FROM likes WHERE postid=? AND owner=?",
+        (post["postid"], username,)
+    )
+    like_or_not = like_or_not.fetchone()
+    likes["lognameLikesThis"] = like_or_not is not None
+    likes["numLikes"] = num_likes
+    url = None
+    if like_or_not is not None:
+        # logname like this post, then find the row number of his/her like
+        cur = connection.execute(
+            "WITH mytable AS "
+            "( "
+            "SELECT postid, owner, ROW_NUMBER() OVER() AS rownum FROM likes "
+            ") "
+            "SELECT rownum FROM mytable WHERE postid=? AND owner=?",
+            (post["postid"], username,)
+        )
+        cur = cur.fetchone()
+        row_num = cur["rownum"]
+        url = "/api/v1/posts/" + str(row_num) + "/"
+    likes["url"] = url
+    return likes
+
+
 def get_posts_results(username, postid_lte, size, page):
     """Find all posts related."""
     next_url = ""
@@ -110,31 +168,10 @@ def get_posts_results(username, postid_lte, size, page):
     for post in cur:
         # add comments to results
         sub_result = {}
-        comments = []
-        cur2 = connection.execute(
-            "SELECT * FROM comments WHERE postid=? ORDER BY commentid",
-            (post["postid"],)
-        )
-        cur2 = cur2.fetchall()
-        for comment in cur2:
-            sub_comment = {}
-            sub_comment["commentid"] = comment["commentid"]
-            sub_comment["lognameOwnsThis"] = username == comment["owner"]
-            # if username != comment["owner"]:
-            #     sub_comment["lognameOwnsThis"] = "false"
-            sub_comment["owner"] = comment["owner"]
-            sub_comment["ownerShowUrl"] = "/users/" + comment["owner"] + "/"
-            sub_comment["text"] = comment["text"]
-            sub_comment["url"] = "/api/v1/comments/" +\
-                                 str(comment["commentid"]) + "/"
-            comments.append(sub_comment)
-        sub_result["comments"] = comments
+        sub_result["comments"] = get_all_comments(post, username)
         sub_result["created"] = post["created"]
         sub_result["imgUrl"] = "/uploads/" + post["postsFilename"]
-
-        # FIXME: get likes
-        
-
+        sub_result["likes"] = get_all_likes(post, username)
         sub_result["owner"] = post["owner"]
         sub_result["ownerImgUrl"] = "/uploads/" + post["usersFilename"]
         sub_result["ownerShowUrl"] = "/users/" + post["owner"] + "/"
