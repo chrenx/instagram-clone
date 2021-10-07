@@ -88,7 +88,10 @@ def get_posts_results(username, postid_lte, size, page):
     # find all related posts, and check if it fullfills the page
     all_people = tuple(all_people)
     cur = connection.execute(
-        f"SELECT * FROM posts "
+        f"SELECT posts.postid AS postid, posts.filename AS postsFilename, "
+        f"posts.owner AS owner, posts.created AS created, "
+        f"users.filename AS usersFilename "
+        f"FROM posts "
         f"LEFT JOIN users ON posts.owner=users.username "
         f"WHERE posts.owner IN {all_people} "
         f"ORDER BY postid DESC "
@@ -126,6 +129,18 @@ def get_posts_results(username, postid_lte, size, page):
                                  str(comment["commentid"]) + "/"
             comments.append(sub_comment)
         sub_result["comments"] = comments
+        sub_result["created"] = post["created"]
+        sub_result["imgUrl"] = "/uploads/" + post["postsFilename"]
+
+        # FIXME: get likes
+        
+
+        sub_result["owner"] = post["owner"]
+        sub_result["ownerImgUrl"] = "/uploads/" + post["usersFilename"]
+        sub_result["ownerShowUrl"] = "/users/" + post["owner"] + "/"
+        sub_result["postShowUrl"] = "/posts/" + str(post["postid"]) + "/"
+        sub_result["postid"] = post["postid"]
+        sub_result["url"] = "/api/v1/posts/" + str(post["postid"]) + "/"
         results.append(sub_result)
 
     return results, next_url
