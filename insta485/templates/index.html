@@ -6,9 +6,8 @@
         <link rel="stylesheet" type="text/css" href="{{url_for("static", filename="css/style.css")}}">
     </head>
     
+    <link rel="shortcut icon" href="#"> <!-- To solve favicon.ico 404 problem -->
     <body>
-        
-    <div id="reactEntry"> <!-- Javascript code -->
 
     <div class="topPart">
         <a href="{{url_for("show_index")}}">
@@ -27,68 +26,8 @@
 
     </div> <!-- for the whole style, everything in the middle-->
     
-
-    {% for post in posts %}
-    <!-- awdeorio post -->
-    <div class="middlePart" style="border:lightgray; border-style:solid; border-width:1px;">
-        <a href={{url_for("users", user_url_slug=post[2])}} style="text-decoration:none; color:black;">
-            <img src={{url_for("get_pic", filename=profiles[post[2]])}} alt={{post[2]}} width="40" style="position:absolute;">
-            <div style="position:absolute; top:15px; left:50px;">
-                <b>
-                    {{post[2]}} <!-- post owner -->
-                </b>
-            </div>
-        </a>
-        <a href={{url_for("posts", postid_url_slug=post[0])}} style="text-decoration:none; color:gray;">
-            <div style="position:absolute; top:15px; right:0px; color:gray;">{{post[3]}}</div>
-        </a>
-        <br><br><br>
-        <img class="post1" src={{url_for("get_pic", filename=post[1])}} alt="{{post[2]}} Ins">
-        <br><br>
-        <div>
-            {% if likes[post[0]] == 1 %}
-                1 like
-            {% else %}
-                {{likes[post[0]]}} likes
-            {% endif %}
-        </div><br>
-        {% for comment in comments[post[0]] %}
-            <div>
-                <a href={{url_for("users", user_url_slug=comment[1])}} style="text-decoration:none; color:black;">
-                    <b>{{comment[1]}}</b>
-                </a> {{comment[2]}} 
-            </div><br class="smaller">
-        {% endfor %}
-        <br>
-        {% if like_this_post[post[0]] %}
-        <!-- show unlike button if user likes-->
-            <form action="/likes/?target={{current_page}}" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="operation" value="unlike"/>
-                <input type="hidden" name="postid" value={{post[0]}} />
-                <input type="submit" name="unlike" value="unlike"/>
-            </form>
-        {% else %}
-        <!-- show like button if user unlikes-->
-            <form action="/likes/?target={{current_page}}" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="operation" value="like"/>
-                <input type="hidden" name="postid" value={{post[0]}} />
-                <input type="submit" name="like" value="like"/>
-            </form>
-
-        {% endif %}
-        <br>
-        <!-- comments -->
-        <form action="/comments/?target={{current_page}}" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="operation" value="create"/>
-            <input type="hidden" name="postid" value="{{post[0]}}" />
-            <input type="text" name="text" required/>
-            <input type="submit" name="comment" value="comment"/>
-        </form>
-        
-
-    </div><br>
-    {% endfor %}
-    
+    <div id="reactEntry"> <!-- Javascript code -->      
+        Loading ...    
     </div> <!-- Javascript code -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/bundle.js') }}"></script>
     
