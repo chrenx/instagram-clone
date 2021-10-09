@@ -55,6 +55,7 @@ class IndividualPost extends React.Component {
           owner={sub.owner}
           ownerShowUrl={sub.ownerShowUrl}
           text={sub.text}
+          url={sub.url}
           key={sub.commentid}
         />,
       );
