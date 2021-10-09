@@ -93,3 +93,10 @@ a.hyperlinkstyle {
     text-decoration:none;
     color:black;
 }
+
+div.created {
+    position: absolute;
+    top: 15px;
+    right: 0px;
+    color: gray;
+}
