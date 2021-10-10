@@ -166,7 +166,7 @@ class IndividualPost extends React.Component {
         <br />
         <br />
         <br />
-        <img className="post1" src={imgUrl} alt="desciption of post" onDoubleClick={(e) => clickEvent(e, likes.lognameLikesThis, likes.url, this.unlikePost, this.likePost)}/>
+        <img className="post1" src={imgUrl} alt="desciption of post" onDoubleClick={(e) => clickEvent(e, likes.lognameLikesThis, likes.url, this.unlikePost, this.likePost)} />
         <br />
         <ShowLikeButton
           lognameLikesThis={likes.lognameLikesThis}

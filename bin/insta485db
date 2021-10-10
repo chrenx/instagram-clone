@@ -43,10 +43,6 @@ case $1 in
 		sqlite3 -batch -line var/insta485.sqlite3 'SELECT * FROM posts'
 		sqlite3 -batch -line var/insta485.sqlite3 'SELECT * FROM users'
 		;;
-	*)
-		usage
-		exit 1
-		;;
 	"random")
 		SHUF=shuf
 		# If shuf is not on this machine, try to use gshuf instead
@@ -68,6 +64,10 @@ case $1 in
 		  OWNER="awdeorio"
 		  sqlite3 -echo -batch ${DB_FILENAME} "INSERT INTO posts(filename, owner) VALUES('${FILENAME}','${OWNER}');"
 		done
+		;;
+	*)
+		usage
+		exit 1
 		;;
 esac
 
