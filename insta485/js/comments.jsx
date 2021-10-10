@@ -1,48 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class CommentDeleteButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      text: '',
-      owner: '',
-    };
+function CommentDeleteButton(props) {
+  const {
+    lognameOwnsThis, commentid, deleteComment, deleteUrl,
+  } = props;
+  if (lognameOwnsThis) {
+    return (
+      <button className="delete-comment-button" onClick={(e) => deleteComment(e, commentid, deleteUrl)} type="button">
+        Delete Comment
+      </button>
+    );
   }
-
-  deleteCommentFunc(e) {
-    e.preventDefault();
-    const { url } = this.props;
-    fetch(url, { method: 'DELETE' })
-      .then(() => {
-        this.setState({text: ''});
-        this.setState({owner: ''});
-      });
-    return null;
-    // .then((response) => {
-    //   if (!response.ok) throw Error(response.statusText);
-    //   return response.json(); 
-    // });
-  }
-
-  render() {
-    const {
-      lognameOwnsThis,
-    } = this.props;
-    if (lognameOwnsThis) {
-      return (
-        <button className="delete-comment-button" onClick={this.deleteCommentFunc.bind(this)} type="button">
-          Delete Comment
-        </button>
-      );
-    }
-    return null;
-  }
+  return null;
 }
 
 function Comments(props) {
   const {
-    ownerShowUrl, owner, text, commentid, lognameOwnsThis, url,
+    ownerShowUrl, owner, text, commentid, lognameOwnsThis, deleteComment, deleteUrl,
   } = props;
   return (
     <div>
@@ -54,11 +29,10 @@ function Comments(props) {
           {text}
         </span>
         <CommentDeleteButton
-          text={text}
-          owner={owner}
           lognameOwnsThis={lognameOwnsThis}
-          url={url}
-          key={commentid}
+          commentid={commentid}
+          deleteComment={deleteComment}
+          deleteUrl={deleteUrl}
         />
       </p>
     </div>
@@ -66,10 +40,10 @@ function Comments(props) {
 }
 
 CommentDeleteButton.propTypes = {
-  text: PropTypes.string.isRequired,
-  owner: PropTypes.string.isRequired,
   lognameOwnsThis: PropTypes.bool.isRequired,
-  url: PropTypes.string.isRequired,
+  commentid: PropTypes.number.isRequired,
+  deleteComment: PropTypes.func.isRequired,
+  deleteUrl: PropTypes.string.isRequired,
 };
 
 Comments.propTypes = {
@@ -78,7 +52,8 @@ Comments.propTypes = {
   owner: PropTypes.string.isRequired,
   commentid: PropTypes.number.isRequired,
   lognameOwnsThis: PropTypes.bool.isRequired,
-  url: PropTypes.string.isRequired,
+  deleteComment: PropTypes.func.isRequired,
+  deleteUrl: PropTypes.string.isRequired,
 };
 
 export default Comments;

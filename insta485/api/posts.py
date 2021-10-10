@@ -248,12 +248,13 @@ def add_comment():
     postid = flask.request.args.get("postid", type=int)
     if postid is None:
         raise InvalidUsage("Bad Request", 400)
-    text = flask.request.json["text"]
+    data = flask.request.get_json(force=True)
+    comment = data['text']
     connection = insta485.model.get_db()
     connection.execute(
         "INSERT INTO comments(owner, postid, text) "
         "VALUES (?, ?, ?)",
-        (username, postid, text,)
+        (username, postid, comment,)
     )
     cur = connection.execute(
         "SELECT last_insert_rowid() AS commentid FROM comments"
@@ -265,7 +266,7 @@ def add_comment():
         "lognameOwnsThis": True,
         "owner": username,
         "ownerShowUrl": "/users/" + username + "/",
-        "text": text,
+        "text": comment,
         "url": "/api/v1/comments/" + str(commentid)
     }
     return flask.jsonify(**context), 201
