@@ -10,7 +10,7 @@ class IndividualPost extends React.Component {
       comments: [],
       created: '',
       imgUrl: '',
-      likes: any = {},
+      likes: {},
       owner: '',
       ownerImgUrl: '',
       ownerShowUrl: '',
@@ -83,29 +83,25 @@ class IndividualPost extends React.Component {
   unlikePost(e, oneLikeUrl) {
     e.preventDefault();
     const { likes } = this.state;
-    fetch(oneLikeUrl, { method: 'DELETE', credentials: 'same-origin' })
-      .then((response) => {
-        if (!response.ok) throw Error(response.statusText);
-        return response.json();
-      })
-      .then(() => {
-        const update = { lognameLikesThis: false, numLikes: likes.numLikes - 1, url: oneLikeUrl };
-        this.setState({ likes: update });
-      })
-      .catch((error) => console.log(error));
+    const update = { lognameLikesThis: false, numLikes: likes.numLikes - 1, url: null };
+    this.setState({ likes: update });
+    fetch(oneLikeUrl, { method: 'DELETE', credentials: 'same-origin' });
   }
 
   // like a post
-  likePost(e, oneLikeUrl) {
+  likePost(e) {
     e.preventDefault();
+    const likesUrl = '/api/v1/likes/';
+    const { postid } = this.state;
+    const combine = `${likesUrl}?postid=${postid}`;
     const { likes } = this.state;
-    fetch(oneLikeUrl, { method: 'POST', credentials: 'same-origin' })
+    fetch(combine, { method: 'POST', credentials: 'same-origin' })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         return response.json();
       })
-      .then(() => {
-        const update = { lognameLikesThis: true, numLikes: likes.numLikes + 1, url: oneLikeUrl };
+      .then((data) => {
+        const update = { lognameLikesThis: true, numLikes: likes.numLikes + 1, url: data.url };
         this.setState({ likes: update });
       })
       .catch((error) => console.log(error));
@@ -113,7 +109,7 @@ class IndividualPost extends React.Component {
 
   render() {
     const {
-      comments, created, imgUrl, likes, owner, ownerImgUrl,
+      comments, created, likes, imgUrl, owner, ownerImgUrl,
       ownerShowUrl, postShowUrl, newcomment,
     } = this.state;
 
@@ -133,6 +129,27 @@ class IndividualPost extends React.Component {
       );
     });
 
+    // let timer;
+
+    function clickEvent(event, lognameLikesThis, url, unlikePost, likePost) {
+      event.preventDefault();
+      // clearTimeout(timer);
+      // if (event.detail === 1) {
+      //   timer = setTimeout(onClick, 200);
+      // } else if (event.detail === 2) {
+      //   if (lognameLikesThis) {
+      //     this.unlikePost(url);
+      //   } else {
+      //     this.likePost();
+      //   }
+      // }
+      if (lognameLikesThis) {
+        unlikePost(event, url);
+      } else {
+        likePost(event);
+      }
+    }
+    // onClick={(e) => clickEvent(e, likes.lognameLikesThis, likes.url, onClick)}
     return (
       <div className="middlePart">
         <a className="hyperlinkstyle" href={ownerShowUrl}>
@@ -149,7 +166,7 @@ class IndividualPost extends React.Component {
         <br />
         <br />
         <br />
-        <img className="post1" src={imgUrl} alt="desciption of post" />
+        <img className="post1" src={imgUrl} alt="desciption of post" onDoubleClick={(e) => clickEvent(e, likes.lognameLikesThis, likes.url, this.unlikePost, this.likePost)}/>
         <br />
         <ShowLikeButton
           lognameLikesThis={likes.lognameLikesThis}
@@ -202,7 +219,7 @@ function ShowLikeButton(props) {
     );
   }
   return (
-    <button className="like-unlike-button" onClick={(e) => likePost(e, oneLikeUrl)} type="button" style={{ marginLeft: '1.5rem' }}>
+    <button className="like-unlike-button" onClick={(e) => likePost(e)} type="button" style={{ marginLeft: '1.5rem' }}>
       Like
     </button>
   );

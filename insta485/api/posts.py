@@ -304,7 +304,7 @@ def create_like():
     )
     cur = cur.fetchone()
     if cur is not None:
-        raise InvalidUsage("Conflict", 409)
+        raise InvalidUsage("Conflict xx " + str(cur["likeid"]), 409)
     # create a like now
     connection.execute(
         "INSERT INTO likes(owner, postid) "
