@@ -21,9 +21,9 @@ class Posts extends React.Component {
   componentDidMount() {
     const { url } = this.props;
 
-    window.onpopstate = () => {
-      window.history.back();
-    }
+    // window.onpopstate = () => {
+    //   window.history.back();
+    // }
 
     fetch(url, { credentials: 'same-origin' })
       .then((response) => {
