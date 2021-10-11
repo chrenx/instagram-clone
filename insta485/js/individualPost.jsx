@@ -169,7 +169,6 @@ class IndividualPost extends React.Component {
     }
     // onClick={(e) => clickEvent(e, likes.lognameLikesThis, likes.url, onClick)}
 
-
     return (
       <div className="middlePart">
         <a className="hyperlinkstyle" href={ownerShowUrl}>
@@ -269,6 +268,6 @@ IndividualPost.propTypes = {
 
 IndividualPost.defaultProps = {
   likesUrl: null,
-}
+};
 
 export default IndividualPost;
