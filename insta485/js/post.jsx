@@ -20,9 +20,11 @@ class Posts extends React.Component {
   }
 
   componentDidMount() {
+    performance.mark('Begin');
     window.onpopstate = () => {
       window.history.back();
     };
+    performance.mark('End');
     setTimeout(() => {
       const { url } = this.props;
       // const { allposts } = this.state;
@@ -66,9 +68,11 @@ class Posts extends React.Component {
   }
 
   refresh() {
+    performance.mark('Begin');
     window.onpopstate = () => {
       window.history.back();
     };
+    performance.mark('End');
     const { next } = this.state;
     const { allposts } = this.state;
     if (next !== '') {

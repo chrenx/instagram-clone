@@ -51,6 +51,7 @@ class IndividualPost extends React.Component {
           ownerImgUrl: data.ownerImgUrl,
           ownerShowUrl: data.ownerShowUrl,
           postid: data.postid,
+          postShowUrl: data.postShowUrl,
         });
       })
       .catch((error) => console.log(error));
@@ -151,16 +152,6 @@ class IndividualPost extends React.Component {
 
     function clickEvent(event, lognameLikesThis, url, unlikePost, likePost) {
       event.preventDefault();
-      // clearTimeout(timer);
-      // if (event.detail === 1) {
-      //   timer = setTimeout(onClick, 200);
-      // } else if (event.detail === 2) {
-      //   if (lognameLikesThis) {
-      //     this.unlikePost(url);
-      //   } else {
-      //     this.likePost();
-      //   }
-      // }
       if (lognameLikesThis) {
         unlikePost(event, url);
       } else {
