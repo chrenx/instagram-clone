@@ -10,13 +10,16 @@ class IndividualPost extends React.Component {
       comments: [],
       created: '',
       imgUrl: '',
-      likes: {},
+      // likes: {},
       owner: '',
       ownerImgUrl: '',
       ownerShowUrl: '',
       postShowUrl: '',
       postid: null,
       newcomment: '',
+      newLognameLikesThis: true,
+      newNumLikes: 0,
+      newLikesUrl: '',
     };
     this.deleteComment = this.deleteComment.bind(this);
     this.commentSubmit = this.commentSubmit.bind(this);
@@ -25,7 +28,14 @@ class IndividualPost extends React.Component {
   }
 
   componentDidMount() {
-    const { url } = this.props;
+    const {
+      lognameLikesThis, numLikes, likesUrl, url,
+    } = this.props;
+    this.setState({
+      newLognameLikesThis: lognameLikesThis,
+      newNumLikes: numLikes,
+      newLikesUrl: likesUrl,
+    });
     fetch(url, { credentials: 'same-origin' })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
@@ -36,7 +46,7 @@ class IndividualPost extends React.Component {
           comments: data.comments,
           created: data.created,
           imgUrl: data.imgUrl,
-          likes: data.likes,
+          // likes: data.likes,
           owner: data.owner,
           ownerImgUrl: data.ownerImgUrl,
           ownerShowUrl: data.ownerShowUrl,
@@ -82,9 +92,12 @@ class IndividualPost extends React.Component {
   // unlike a post
   unlikePost(e, oneLikeUrl) {
     e.preventDefault();
-    const { likes } = this.state;
-    const update = { lognameLikesThis: false, numLikes: likes.numLikes - 1, url: null };
-    this.setState({ likes: update });
+    const { newNumLikes } = this.state;
+    this.setState({
+      newLognameLikesThis: false,
+      newNumLikes: newNumLikes - 1,
+      newLikesUrl: null,
+    });
     fetch(oneLikeUrl, { method: 'DELETE', credentials: 'same-origin' });
   }
 
@@ -94,23 +107,28 @@ class IndividualPost extends React.Component {
     const likesUrl = '/api/v1/likes/';
     const { postid } = this.state;
     const combine = `${likesUrl}?postid=${postid}`;
-    const { likes } = this.state;
+    // const { likes } = this.state;
+    const { newNumLikes } = this.state;
     fetch(combine, { method: 'POST', credentials: 'same-origin' })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         return response.json();
       })
       .then((data) => {
-        const update = { lognameLikesThis: true, numLikes: likes.numLikes + 1, url: data.url };
-        this.setState({ likes: update });
+        this.setState({
+          newLognameLikesThis: true,
+          newNumLikes: newNumLikes + 1,
+          newLikesUrl: data.url,
+        });
       })
       .catch((error) => console.log(error));
   }
 
   render() {
     const {
-      comments, created, likes, imgUrl, owner, ownerImgUrl,
-      ownerShowUrl, postShowUrl, newcomment,
+      comments, created, imgUrl, owner, ownerImgUrl, // likes,
+      ownerShowUrl, postShowUrl, newcomment, newLognameLikesThis,
+      newNumLikes, newLikesUrl,
     } = this.state;
 
     const subComment = [];
@@ -150,6 +168,8 @@ class IndividualPost extends React.Component {
       }
     }
     // onClick={(e) => clickEvent(e, likes.lognameLikesThis, likes.url, onClick)}
+
+
     return (
       <div className="middlePart">
         <a className="hyperlinkstyle" href={ownerShowUrl}>
@@ -166,16 +186,16 @@ class IndividualPost extends React.Component {
         <br />
         <br />
         <br />
-        <img className="post1" src={imgUrl} alt="desciption of post" onDoubleClick={(e) => clickEvent(e, likes.lognameLikesThis, likes.url, this.unlikePost, this.likePost)} />
+        <img className="post1" src={imgUrl} alt="desciption of post" onDoubleClick={(e) => clickEvent(e, newLognameLikesThis, newLikesUrl, this.unlikePost, this.likePost)} />
         <br />
         <ShowLikeButton
-          lognameLikesThis={likes.lognameLikesThis}
+          lognameLikesThis={newLognameLikesThis}
           unlikePost={this.unlikePost}
           likePost={this.likePost}
-          oneLikeUrl={likes.url}
+          oneLikeUrl={newLikesUrl}
         />
         <br />
-        <Like numLikes={likes.numLikes} />
+        <Like numLikes={newNumLikes} />
         <ul>{subComment}</ul>
         <form className="comment-form" onSubmit={this.commentSubmit} style={{ marginLeft: '2rem', marginBottom: '1rem' }}>
           <input type="text" name="comment_text" value={newcomment} onChange={(e) => this.setState({ newcomment: e.target.value })} />
@@ -242,6 +262,13 @@ ShowLikeButton.defaultProps = {
 
 IndividualPost.propTypes = {
   url: PropTypes.string.isRequired,
+  lognameLikesThis: PropTypes.bool.isRequired,
+  numLikes: PropTypes.number.isRequired,
+  likesUrl: PropTypes.string,
 };
+
+IndividualPost.defaultProps = {
+  likesUrl: null,
+}
 
 export default IndividualPost;

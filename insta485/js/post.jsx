@@ -11,6 +11,9 @@ class Posts extends React.Component {
       next: '',
       allLength: 0,
       hasMore: true,
+      // lognameLikesThis: true,
+      // numLikes: null,
+      // likesUrl: null,
     };
     this.refresh = this.refresh.bind(this);
   }
@@ -84,6 +87,13 @@ class Posts extends React.Component {
     const { allLength } = this.state;
     const { results } = this.state;
     const { hasMore } = this.state;
+    // const {
+    //   lognameLikesThis,
+    //   numLikes,
+    //   likesUrl,
+    // } = this.state;
+
+    // let temp = {};
 
     return (
       <div className="post">
@@ -99,7 +109,13 @@ class Posts extends React.Component {
           )}
         >
           {results.map((sub) => (
-            <IndividualPost url={sub.url} key={sub.postid} />
+            <IndividualPost
+              url={sub.url}
+              lognameLikesThis={sub.likes.lognameLikesThis}
+              numLikes={sub.likes.numLikes}
+              likesUrl={sub.likes.url}
+              key={sub.postid}
+            />
           ))}
         </InfiniteScroll>
       </div>
