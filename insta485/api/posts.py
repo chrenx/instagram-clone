@@ -8,9 +8,11 @@ import insta485
 # Handle Exception, from Flask docs
 class InvalidUsage(Exception):
     """API exception."""
+
     status_code = 400
 
     def __init__(self, message, status_code=None, payload=None):
+        """Set up the status code and payload."""
         Exception.__init__(self)
         self.message = message
         if status_code is not None:
@@ -34,7 +36,6 @@ def handle_invalid_usage(error):
     return response
 
 
-# Use sha512 to process password with some salt
 # Return: sha512$<salt>$<password_hash>
 def get_processed_password(password, salt=uuid.uuid4().hex):
     """Generate a hashed password with some salt."""
@@ -71,7 +72,7 @@ def check_credentials(username, password):
 
 # Check authorization, return username
 def check_authorization():
-    """Helper function to check authorization."""
+    """Function to check authorization."""
     username = ""
     password = ""
     if "logname" not in flask.session:
@@ -105,7 +106,7 @@ def get_all_comments(post, username):
         sub_comment["ownerShowUrl"] = "/users/" + comment["owner"] + "/"
         sub_comment["text"] = comment["text"]
         sub_comment["url"] = "/api/v1/comments/" +\
-                                str(comment["commentid"]) + "/"
+                             str(comment["commentid"]) + "/"
         comments.append(sub_comment)
     return comments
 
@@ -191,7 +192,7 @@ def get_posts_results(username, postid_lte, size, page):
         new_postid_lte = postid_lte
         if postid_lte is None:
             new_postid_lte = cur[0]["postid"]
-        next_url += (flask.request.path + "?size=" + str(size) + "&page=" +\
+        next_url += (flask.request.path + "?size=" + str(size) + "&page=" +
                      str(page + 1) + "&postid_lte=" + str(new_postid_lte))
 
     # process the results
@@ -217,8 +218,8 @@ def get_query_url():
     """Get the url of query."""
     url = flask.request.full_path
     if flask.request.args.get("size") is None and \
-        flask.request.args.get("page") is None and \
-        flask.request.args.get("postid_lte") is None:
+       flask.request.args.get("page") is None and \
+       flask.request.args.get("postid_lte") is None:
         url = flask.request.path
     return url
 

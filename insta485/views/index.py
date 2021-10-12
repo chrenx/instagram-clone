@@ -94,10 +94,7 @@ def create_account():
     # Compute base name (filename without directory).  We use a UUID to avoid
     # clashes with existing files, and ensure that the name is compatible with
     # the filesystem.
-    uuid_basename = "{stem}{suffix}".format(
-        stem=uuid.uuid4().hex,
-        suffix=pathlib.Path(file_name).suffix
-    )
+    uuid_basename = f"{uuid.uuid4().hex}{pathlib.Path(file_name).suffix}"
 
     # Save to disk
     path = insta485.app.config["UPLOAD_FOLDER"]/uuid_basename
@@ -159,10 +156,7 @@ def edit_account():
     # Compute base name (filename without directory).  We use a UUID to avoid
     # clashes with existing files, and ensure that the name is compatible with
     # the filesystem.
-    uuid_basename = "{stem}{suffix}".format(
-        stem=uuid.uuid4().hex,
-        suffix=pathlib.Path(file_name).suffix
-    )
+    uuid_basename = f"{uuid.uuid4().hex}{pathlib.Path(file_name).suffix}"
 
     # Save to disk
     path = insta485.app.config["UPLOAD_FOLDER"]/uuid_basename
@@ -799,10 +793,8 @@ def deal_posts():
         file_in = flask.request.files["file"]
         file_name = file_in.filename
 
-        uuid_basename = "{stem}{suffix}".format(
-            stem=uuid.uuid4().hex,
-            suffix=pathlib.Path(file_name).suffix
-        )
+        uuid_basename = f"{uuid.uuid4().hex}{pathlib.Path(file_name).suffix}"
+
         # Save to disk
         path = insta485.app.config["UPLOAD_FOLDER"]/uuid_basename
         file_in.save(path)
