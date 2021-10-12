@@ -1,8 +1,7 @@
 """REST API for posts."""
-import uuid
-import hashlib
 import flask
 import insta485
+from insta485.views.index import get_processed_password
 
 
 # Handle Exception, from Flask docs
@@ -37,15 +36,15 @@ def handle_invalid_usage(error):
 
 
 # Return: sha512$<salt>$<password_hash>
-def get_processed_password(password, salt=uuid.uuid4().hex):
-    """Generate a hashed password with some salt."""
-    algorithm = 'sha512'
-    hash_obj = hashlib.new(algorithm)
-    password_salted = salt + password
-    hash_obj.update(password_salted.encode('utf-8'))
-    password_hash = hash_obj.hexdigest()
-    password_db_string = "$".join([algorithm, salt, password_hash])
-    return password_db_string
+# def get_processed_password(password, salt=uuid.uuid4().hex):
+#     """Generate a hashed password with some salt."""
+#     algorithm = 'sha512'
+#     hash_obj = hashlib.new(algorithm)
+#     password_salted = salt + password
+#     hash_obj.update(password_salted.encode('utf-8'))
+#     password_hash = hash_obj.hexdigest()
+#     password_db_string = "$".join([algorithm, salt, password_hash])
+#     return password_db_string
 
 
 # Check username and password credentials
@@ -53,11 +52,11 @@ def check_credentials(username, password):
     """Check username and password."""
     if not username or not password:
         raise InvalidUsage("Forbidden", 403)
-    connection = insta485.model.get_db()
-    password_db = connection.execute("SELECT password FROM users WHERE "
-                                     "username = ?", (username,))
+    connec = insta485.model.get_db()
+    password_db_in = connec.execute("SELECT password FROM users WHERE "
+                                    "username = ?", (username,))
     # check if username or password exists
-    cur = password_db.fetchone()
+    cur = password_db_in.fetchone()
     if cur is None:
         raise InvalidUsage("Forbidden", 403)
     password_list = cur["password"].split("$")
@@ -72,7 +71,7 @@ def check_credentials(username, password):
 
 # Check authorization, return username
 def check_authorization():
-    """Function to check authorization."""
+    """Check the username and password."""
     username = ""
     password = ""
     if "logname" not in flask.session:
