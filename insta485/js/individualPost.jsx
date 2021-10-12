@@ -82,24 +82,28 @@ class IndividualPost extends React.Component {
   }
 
   // delete a comment
-  deleteComment(e, commentid, deleteUrl) {
+  deleteComment(e, commentid) {
     e.preventDefault();
+    const deleteCommentUrl = '/api/v1/comments/';
+    const combine = `${deleteCommentUrl}${commentid}/`;
+    fetch(combine, { method: 'DELETE', credentials: 'same-origin' });
     this.setState((prevState) => ({
       comments: prevState.comments.filter((sub) => sub.commentid !== commentid),
     }));
-    fetch(deleteUrl, { method: 'DELETE', credentials: 'same-origin' });
   }
 
   // unlike a post
   unlikePost(e, oneLikeUrl) {
     e.preventDefault();
     const { newNumLikes } = this.state;
-    this.setState({
-      newLognameLikesThis: false,
-      newNumLikes: newNumLikes - 1,
-      newLikesUrl: null,
-    });
-    fetch(oneLikeUrl, { method: 'DELETE', credentials: 'same-origin' });
+    fetch(oneLikeUrl, { method: 'DELETE', credentials: 'same-origin' })
+      .then(() => {
+        this.setState({
+          newLognameLikesThis: false,
+          newNumLikes: newNumLikes - 1,
+          newLikesUrl: null,
+        });
+      });
   }
 
   // like a post
@@ -126,6 +130,9 @@ class IndividualPost extends React.Component {
   }
 
   render() {
+    window.onpopstate = () => {
+      window.history.back();
+    };
     const {
       comments, created, imgUrl, owner, ownerImgUrl, // likes,
       ownerShowUrl, postShowUrl, newcomment, newLognameLikesThis,
@@ -148,15 +155,15 @@ class IndividualPost extends React.Component {
       );
     });
 
-    // let timer;
-
-    function clickEvent(event, lognameLikesThis, url, unlikePost, likePost) {
+    function clickEvent(event, lognameLikesThis, likePost) {
       event.preventDefault();
-      if (lognameLikesThis) {
-        unlikePost(event, url);
-      } else {
+      if (!lognameLikesThis) {
         likePost(event);
+        // unlikePost(event, url);
       }
+      // else {
+      //   likePost(event);
+      // }
     }
     // onClick={(e) => clickEvent(e, likes.lognameLikesThis, likes.url, onClick)}
 
@@ -176,7 +183,7 @@ class IndividualPost extends React.Component {
         <br />
         <br />
         <br />
-        <img className="post1" src={imgUrl} alt="desciption of post" onDoubleClick={(e) => clickEvent(e, newLognameLikesThis, newLikesUrl, this.unlikePost, this.likePost)} />
+        <img className="post1" src={imgUrl} alt="desciption of post" onDoubleClick={(e) => clickEvent(e, newLognameLikesThis, this.likePost)} />
         <br />
         <ShowLikeButton
           lognameLikesThis={newLognameLikesThis}
@@ -186,7 +193,7 @@ class IndividualPost extends React.Component {
         />
         <br />
         <Like numLikes={newNumLikes} />
-        <ul>{subComment}</ul>
+        {subComment}
         <form className="comment-form" onSubmit={this.commentSubmit} style={{ marginLeft: '2rem', marginBottom: '1rem' }}>
           <input type="text" name="comment_text" value={newcomment} onChange={(e) => this.setState({ newcomment: e.target.value })} />
           <noscript>
@@ -206,12 +213,10 @@ function Like(props) {
   } else {
     likegrammar = 'like';
   }
+  const combine = `${numLikes} ${likegrammar}`;
   return (
     <p style={{ marginLeft: '1.5rem' }}>
-      {numLikes}
-      <span style={{ marginLeft: '.5rem' }}>
-        {likegrammar}
-      </span>
+      {combine}
       <br />
     </p>
   );

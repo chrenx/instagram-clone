@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 
 function CommentDeleteButton(props) {
   const {
-    lognameOwnsThis, commentid, deleteComment, deleteUrl,
+    lognameOwnsThis, commentid, deleteComment,
   } = props;
   if (lognameOwnsThis) {
     return (
-      <button className="delete-comment-button" onClick={(e) => deleteComment(e, commentid, deleteUrl)} type="button">
+      <button className="delete-comment-button" onClick={(e) => deleteComment(e, commentid)} type="button">
         Delete Comment
       </button>
     );
@@ -17,7 +17,7 @@ function CommentDeleteButton(props) {
 
 function Comments(props) {
   const {
-    ownerShowUrl, owner, text, commentid, lognameOwnsThis, deleteComment, deleteUrl,
+    ownerShowUrl, owner, text, commentid, lognameOwnsThis, deleteComment,
   } = props;
   return (
     <div>
@@ -32,7 +32,6 @@ function Comments(props) {
           lognameOwnsThis={lognameOwnsThis}
           commentid={commentid}
           deleteComment={deleteComment}
-          deleteUrl={deleteUrl}
         />
       </p>
     </div>
@@ -40,10 +39,14 @@ function Comments(props) {
 }
 
 CommentDeleteButton.propTypes = {
-  lognameOwnsThis: PropTypes.bool.isRequired,
-  commentid: PropTypes.number.isRequired,
+  lognameOwnsThis: PropTypes.bool,
+  commentid: PropTypes.number,
   deleteComment: PropTypes.func.isRequired,
-  deleteUrl: PropTypes.string.isRequired,
+};
+
+CommentDeleteButton.defaultProps = {
+  lognameOwnsThis: false,
+  commentid: 0,
 };
 
 Comments.propTypes = {
@@ -53,7 +56,6 @@ Comments.propTypes = {
   commentid: PropTypes.number.isRequired,
   lognameOwnsThis: PropTypes.bool.isRequired,
   deleteComment: PropTypes.func.isRequired,
-  deleteUrl: PropTypes.string.isRequired,
 };
 
 export default Comments;

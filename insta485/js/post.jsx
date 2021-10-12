@@ -69,9 +69,6 @@ class Posts extends React.Component {
 
   refresh() {
     performance.mark('Begin');
-    window.onpopstate = () => {
-      window.history.back();
-    };
     performance.mark('End');
     const { next } = this.state;
     const { allposts } = this.state;
