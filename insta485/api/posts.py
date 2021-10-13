@@ -129,16 +129,20 @@ def get_all_likes(post, username):
     url = None
     if like_or_not is not None:
         # logname like this post, then find the row number of his/her like
+        # cur = connection.execute(
+        #     "WITH mytable AS "
+        #     "( "
+        #     "SELECT postid, owner, ROW_NUMBER() OVER() AS rownum FROM likes "
+        #     ") "
+        #     "SELECT rownum FROM mytable WHERE postid=? AND owner=?",
+        #     (post["postid"], username,)
+        # )
         cur = connection.execute(
-            "WITH mytable AS "
-            "( "
-            "SELECT postid, owner, ROW_NUMBER() OVER() AS rownum FROM likes "
-            ") "
-            "SELECT rownum FROM mytable WHERE postid=? AND owner=?",
+            "SELECT likeid FROM likes WHERE postid=? AND owner=?",
             (post["postid"], username,)
         )
         cur = cur.fetchone()
-        row_num = cur["rownum"]
+        row_num = cur["likeid"]
         url = "/api/v1/likes/" + str(row_num) + "/"
     likes["url"] = url
     return likes
