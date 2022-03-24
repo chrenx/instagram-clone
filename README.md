@@ -6,4 +6,4 @@ $ ./bin/insta485run
 
 After that, open your browser such as chrome, and type localhost:8000 in the search bar.
 
-If the scripts under the bin/ folder is not runable, please use command 'chmod +x ./bin/insta485install' to make those scripts executable.
+If the scripts under the bin/ folder is not runable, please use command 'chmod +x ' for those three scripts to make them executable.
